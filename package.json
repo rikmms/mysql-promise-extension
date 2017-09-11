@@ -1,0 +1,36 @@
+{
+  "name": "mysql-promise-extension",
+  "version": "0.1.0",
+  "description": "A ES6 Promise based extension for the MySQL module with helper functions for a more simple usage, principally with transactions.",
+  "main": "index.js",
+  "author": "rikmms <sousa.ricardo10@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rikmms/mysql-promise-extension.git"
+  },
+  "keywords": [
+    "mysql",
+    "db",
+    "pool",
+    "connection",
+    "transaction",
+    "promise",
+    "promises",
+    "ES6"
+  ],
+  "engines": {
+    "node": "^4.8.4"
+  },
+  "scripts": {
+    "test": "HOST=127.0.0.1 USER=root PASS=123456 DB=HOBBIES mocha \"./src/**/*.spec.js\" --recursive --ui tdd --reporter nyan --timeout 60000"
+  },
+  "peerDependencies": {
+    "mysql": "2.14.1"
+  },
+  "devDependencies": {
+    "mysql": "2.14.1",
+    "chai": "^3.5.0",
+    "mocha": "3.2.0"
+  }
+}
