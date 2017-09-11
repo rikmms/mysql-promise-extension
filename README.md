@@ -80,6 +80,8 @@ With the `execute` function, we only need to define the queries to pass as a arg
 
 The `executeTransaction` function is slightly different. As we can see, it receives an array of functions. Those functions can receive one argument, which is the result of the previous query. It's useful for cases where we need the result of the previous query. The functions return a query object identical to the object used in the `execute` function. 
 The `executeTransaction` uses the waterfall implementation approach to preserve the sequential order.
+**If any error is thrown during the transaction, then rollback will be done automatically.**
+
 
 **Now, lets see with the wrapper functions:**
 
@@ -89,18 +91,26 @@ const options = { ... }
 
 const getHobbiesAndUsers = (async () => {
 	const connection = createConnection(options)
-	await connection.connectP()
-	const [hobbies, users] = await Promise.all([connection.queryP('select name from HOBBY'), connection.queryP('select name from USER')])
-	await connection.end()
-	console.log(hobbies, users)
+	try {
+		await connection.connectP()
+		const [hobbies, users] = await Promise.all([connection.queryP('select name from HOBBY'), connection.queryP('select name from USER')])
+		console.log(hobbies, users)
+	}
+	finally {
+		await connection.endP()
+	}
 })
 		
 const getHobbiesFromUser = (async () => {
 	const connection = createConnection(options)
-	await connection.connectP()
-	const hobbies = await connection.queryP('select hobby_name as name from USER_HOBBY where user_id=1')
-	await connection.end()
-	console.log(hobbies)
+	try {
+		await connection.connectP()
+		const hobbies = await connection.queryP('select hobby_name as name from USER_HOBBY where user_id=1')
+		console.log(hobbies)
+	}
+	finally {
+		await connection.endP()
+	}
 })
 
 const createUserAndHobby = (async () => {

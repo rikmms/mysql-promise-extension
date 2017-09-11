@@ -32,18 +32,19 @@ describe('connection wrapper unit tests', () => {
   }))
 
   it('should return the hobbies from the user "1", with the P functions from connection', (async () => {
-    
     const connection = createConnection(options)
-    await connection.connectP()
-    const hobbies = await connection.queryP('select hobby_name as name from USER_HOBBY where user_id=1')
-    await connection.end()
-
-    assert.equal(1, hobbies.length)
-    assert.equal('soccer', hobbies[0].name)
+    try {
+      await connection.connectP()
+      const hobbies = await connection.queryP('select hobby_name as name from USER_HOBBY where user_id=1')  
+      assert.equal(1, hobbies.length)
+      assert.equal('soccer', hobbies[0].name)
+    }
+    finally {
+      await connection.endP()
+    }
   }))
 
   it('should return all the hobbies and users', (async () => {
-
     const queryHobbies = 'select name from HOBBY'
     const queryUsers = 'select name from USER'
 
@@ -54,11 +55,15 @@ describe('connection wrapper unit tests', () => {
 
   it('should return all the hobbies and users, with the P functions from connection', (async () => {
     const connection = createConnection(options)
-    await connection.connectP()
-    const [hobbies, users] = await Promise.all([connection.queryP('select name from HOBBY'), connection.queryP('select name from USER')])
-    await connection.end()
-    assert.equal('soccer', hobbies[0].name)
-    assert.equal('rikmms', users[0].name)
+    try {
+      await connection.connectP()
+      const [hobbies, users] = await Promise.all([connection.queryP('select name from HOBBY'), connection.queryP('select name from USER')])
+      assert.equal('soccer', hobbies[0].name)
+      assert.equal('rikmms', users[0].name)
+    }
+    finally {
+      await connection.endP()
+    }
   }))
 
   
