@@ -1,7 +1,7 @@
 {
   "name": "mysql-promise-extension",
   "version": "0.1.0",
-  "description": "A ES6 Promise based extension for the MySQL module with helper functions for a more simple usage, principally with transactions.",
+  "description": "An ES6 Promise based extension for the MySQL module with helper functions for a more simple usage, mainly with transactions.",
   "main": "index.js",
   "author": "rikmms <sousa.ricardo10@gmail.com>",
   "license": "MIT",
