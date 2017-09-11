@@ -31,48 +31,50 @@ The extended functions provided are:
 
 Where the functions with suffix "P" are functions that return Promise.
 
-The last two functions: `execute(query)` and `executeTransaction(queryFunctions)`, provide a simple form to make queries with less verbose code like establish and terminate connections, and handle the transactions commit/rollback.
+The last two functions: `execute` and `executeTransaction`, provide a simple form to make queries with less verbose code like establish and terminate connections, and handle the transactions commit/rollback.
 
 **The query object is the [same](https://www.npmjs.com/package/mysql#performing-queries) as the used in the [mysql](https://www.npmjs.com/package/mysql) module.**
 
 #### Examples
 (all the examples use the async/await syntax)
 
-**First of all, lets see how the `execute(query)` and `executeTransaction(query)` are used:**
+**First of all, lets see how the `execute` and `executeTransaction` are used:**
 
-    const createConnection = require('mysql-promise-extension').createConnection
-    const options = { ... }
-    
-    const getHobbiesAndUsers = (async () => {
-      const queryHobbies = 'select name from HOBBY'
-      const queryUsers = 'select name from USER'
-      const [hobbies, users] = await createConnection(options).execute([queryHobbies, queryUsers])
-      console.log(hobbies, users)
-    })
-    
-    const getHobbiesFromUser = (async () => {
-      const queryHobbies = {
-        sql: 'select hobby_name as name from USER_HOBBY where user_id=?',
-        values: [1]
-      }
-      const hobbies = await createConnection(options).execute(queryHobbies)
-      console.log(hobbies)
-    })
-    
-    const createUserAndHobby = (async () => {
-      const queryCreateUser = () => ({
-        sql: 'insert into USER (name) values(?);',
-        values: ['bob']
-      })
-    
-      const queryCreateAssociationWithHobby = previousQueryResult => ({
-        sql: 'insert into USER_HOBBY (user_id, hobby_name) values(?,?);',
-        values: [previousQueryResult.insertId, 'soccer']
-      })
-    
-      const result = await createConnection(options).executeTransaction([queryCreateUser, queryCreateAssociationWithHobby])
-      console.log(result.affectedRows)
-    })
+```js
+const createConnection = require('mysql-promise-extension').createConnection
+const options = { ... }
+
+const getHobbiesAndUsers = (async () => {
+	const queryHobbies = 'select name from HOBBY'
+	const queryUsers = 'select name from USER'
+	const [hobbies, users] = await createConnection(options).execute([queryHobbies, queryUsers])
+	console.log(hobbies, users)
+})
+
+const getHobbiesFromUser = (async () => {
+	const queryHobbies = {
+		sql: 'select hobby_name as name from USER_HOBBY where user_id=?',
+		values: [1]
+	}
+	const hobbies = await createConnection(options).execute(queryHobbies)
+	console.log(hobbies)
+})
+
+const createUserAndHobby = (async () => {
+	const queryCreateUser = () => ({
+		sql: 'insert into USER (name) values(?);',
+		values: ['bob']
+	})
+
+	const queryCreateAssociationWithHobby = previousQueryResult => ({
+		sql: 'insert into USER_HOBBY (user_id, hobby_name) values(?,?);',
+		values: [previousQueryResult.insertId, 'soccer']
+	})
+
+	const result = await createConnection(options).executeTransaction([queryCreateUser, queryCreateAssociationWithHobby])
+	console.log(result.affectedRows)
+})
+```
 
 With the `execute` function, we only need to define the queries to pass as a argument and can be more than one. 
 
@@ -81,53 +83,55 @@ The `executeTransaction` uses the waterfall implementation approach to preserve 
 
 **Now, lets see with the wrapper functions:**
 
-    const createConnection = require('mysql-promise-extension').createConnection
-    const options = { ... }
-    
-    const getHobbiesAndUsers = (async () => {
-      const connection = createConnection(options)
-      await connection.connectP()
-      const [hobbies, users] = await Promise.all([connection.queryP('select name from HOBBY'), connection.queryP('select name from USER')])
-      await connection.end()
-      console.log(hobbies, users)
-    })
-        
-    const getHobbiesFromUser = (async () => {
-      const connection = createConnection(options)
-      await connection.connectP()
-      const hobbies = await connection.queryP('select hobby_name as name from USER_HOBBY where user_id=1')
-      await connection.end()
-      console.log(hobbies)
-    })
-    
-    const createUserAndHobby = (async () => {
-      const connection = createConnection(options)
-      await connection.connectP()
-      try {
-        await connection.beginTransactionP()
-        
-        const createUser = await connection.queryP({
-          sql: 'insert into USER (name) values(?);',
-          values: ['bob']
-        })
-    
-        const createHobby = await connection.queryP({
-          sql: 'insert into USER_HOBBY (user_id, hobby_name) values(?,?);',
-          values: [createUser.insertId, 'soccer']
-        })
-      
-        await connection.commitTransactionP()
-    
-        console.log(createHoby.affectedRows)
-      }
-      catch(err) {
-        await connection.rollbackP()
-      }
-      finally {
-        await connection.endP()
-      }
-    })
-    
+```js
+const createConnection = require('mysql-promise-extension').createConnection
+const options = { ... }
+
+const getHobbiesAndUsers = (async () => {
+	const connection = createConnection(options)
+	await connection.connectP()
+	const [hobbies, users] = await Promise.all([connection.queryP('select name from HOBBY'), connection.queryP('select name from USER')])
+	await connection.end()
+	console.log(hobbies, users)
+})
+		
+const getHobbiesFromUser = (async () => {
+	const connection = createConnection(options)
+	await connection.connectP()
+	const hobbies = await connection.queryP('select hobby_name as name from USER_HOBBY where user_id=1')
+	await connection.end()
+	console.log(hobbies)
+})
+
+const createUserAndHobby = (async () => {
+	const connection = createConnection(options)
+	await connection.connectP()
+	try {
+		await connection.beginTransactionP()
+		
+		const createUser = await connection.queryP({
+			sql: 'insert into USER (name) values(?);',
+			values: ['bob']
+		})
+
+		const createHobby = await connection.queryP({
+			sql: 'insert into USER_HOBBY (user_id, hobby_name) values(?,?);',
+			values: [createUser.insertId, 'soccer']
+		})
+	
+		await connection.commitTransactionP()
+
+		console.log(createHoby.affectedRows)
+	}
+	catch(err) {
+		await connection.rollbackP()
+	}
+	finally {
+		await connection.endP()
+	}
+})
+```
+
 ### **pool**
 // TODO
 
