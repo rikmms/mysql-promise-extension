@@ -1,51 +1,20 @@
-## mysql-easy-pool
+# MySQL Promise Extension
 
-This module exports an object to handle with the mysql connection's pool more easily. We can use the getConnection() function to get one connection for execute our queries, or we can use the getTransactionConnection() function to get one connection inside a transaction that performs the rollback action if any error occurred.
+// TODO - Description
 
-The purpose of this module is to act like a helper for the great [mysql](https://www.npmjs.com/package/mysql) module.
+### Installation
+It's available through the NPM package:
 
-#### Installation:
-- ```npm install mysql-easy-pool```
+    npm install --save mysql
+    npm install --save mysql-promise-extension
 
-#### Example:
-<pre>
-  <code>
-    const MySqlEasyPool = require('mysql-easy-pool')
-    const mysqlPool = new MySqlEasyPool({
-    	host: process.env.HOST,
-    	user: process.env.USER,
-    	password: process.env.PASS,
-    	database: process.env.DB
-    })
-  
-    mysqlPool.getConnection((connection, done) => {
-      // create the queries
-    	connection.query(SQL STATEMENT, [...], (err, res) => {
-    	  done(err, res)
-    	})
-    }, callback)
-    
-    mysqlPool.getTransactionConnection((connection, done) => {
-      // create the queries
-  		async.waterfall([
-  			(cb) => {
-  				connection.query(SQL STATEMENT ONE, [...], (err, res) => cb(err, res))
-  			},
-  			(res, cb) => {
-  				connection.query(SQL STATEMENT TWO, [...], (err, res) => cb(err, res))
-  			}
-  		],
-  		(err, res) => {
-  			done(err, res)
-  		})
-  	}, callback)
-  	
-    > Where the callback function receives the error or the result, like: function(err, result) = { ... }
+### Usage
 
-    > You can use the getter function 'pool', like "mysqlPool.pool", for set extra options to the pool.
-  </code>
-</pre>
+// TODO
 
-#### Future dev:
- - Improve the documentation.
- - Able to support the [PoolCluster](https://www.npmjs.com/package/mysql#poolcluster) functionality.
+#### Bugs/Requests
+[GitHub issues](https://github.com/rikmms/mysql-promise-extension/issues)
+
+#### Todo List:
+ - Create the proper documentation.
+ - Able to extend the [PoolCluster](https://www.npmjs.com/package/mysql#poolcluster) functionality.
