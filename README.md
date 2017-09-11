@@ -31,7 +31,7 @@ The extended functions provided are:
 
 Where the functions with suffix "P" are functions that return Promise.
 
-The last two functions: `execute` and `executeTransaction`, provide a simple form to make queries with less verbose code like establish and terminate connections, and handle the transactions commit/rollback.
+The last two functions: `execute` and `executeTransaction`, provide a simple way to make queries with less verbose code like establish and terminate connections, and handle the transactions commit/rollback.
 
 **The query object is the [same](https://www.npmjs.com/package/mysql#performing-queries) as the used in the [mysql](https://www.npmjs.com/package/mysql) module.**
 
