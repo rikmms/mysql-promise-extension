@@ -1,4 +1,3 @@
-'use strict'
 const assert = require('chai').assert
 const createPool = require('./pool-wrapper')
 const sharedSpec = require('./shared.spec')

@@ -1,4 +1,3 @@
-'use strict'
 const assert = require('chai').assert
 const createConnection = require('./connection-wrapper').createConnection
 const sharedSpec = require('./shared.spec')
