@@ -161,7 +161,7 @@ The extended functions provided are:
 
 Where the functions with suffix "P" are functions that return Promise.
 
-The last two functions: `execute` and `executeTransaction`, provide the same functionality as the same functions, with same names, from the connection object.
+The last two functions: `execute` and `executeTransaction`, provide the same functionality as the functions, with same names, from the connection object.
 
 #### Examples
 
