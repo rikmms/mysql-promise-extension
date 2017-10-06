@@ -18,7 +18,7 @@ This module exports two factory functions. One for connections: `createConnectio
 ### **connection**
 The connection object returned by the factory function `createConnection(options)` is the same as the [connection](https://www.npmjs.com/package/mysql#establishing-connections) object from the [mysql](https://www.npmjs.com/package/mysql) module, but with the extended functionality provided by this module. So, **you have access to all original properties and functions from the mysql module in the case you need it**. 
 
-The principal extended functions provided are:
+The principal extended functions are:
 
  - `execute(query)`
  - `executeTransaction(queryFunctions)` 
@@ -152,7 +152,7 @@ const createUserAndHobby = (async () => {
 If you want to use a pool of connections, you can get it through the factory function `pool(options)`.
 The factory function returns an object identical to the MySql module's [pool](https://www.npmjs.com/package/mysql#pooling-connections) object, but, like the connection, is extended with more functionality.
 
-The extended functions provided are:
+The extended functions are:
 
  - `getConnectionP()`: Wrap function for `pool.getConnection()`
  - `queryP(query)`: Wrap function for `pool.query(query)`
