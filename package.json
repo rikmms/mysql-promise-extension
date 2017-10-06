@@ -26,11 +26,11 @@
     "test": "HOST=127.0.0.1 USER=root PASS=123456 DB=HOBBIES mocha \"./src/**/*.spec.js\" --recursive --ui tdd --reporter nyan --timeout 60000"
   },
   "peerDependencies": {
-    "mysql": "2.14.1"
+    "mysql": "2.x"
   },
   "devDependencies": {
-    "mysql": "2.14.1",
-    "chai": "^3.5.0",
+    "mysql": "2.x",
+    "chai": "3.5.0",
     "mocha": "3.2.0"
   }
 }
