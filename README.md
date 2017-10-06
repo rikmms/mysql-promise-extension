@@ -7,7 +7,7 @@ This module decorates the objects: [connection](https://www.npmjs.com/package/my
 ### Installation
 It's available through the NPM package:
 
-    npm install --save mysql
+    npm install --save mysql (peer dependency)
     npm install --save mysql-promise-extension
 
 ----------
@@ -18,7 +18,16 @@ This module exports two factory functions. One for connections: `createConnectio
 ### **connection**
 The connection object returned by the factory function `createConnection(options)` is the same as the [connection](https://www.npmjs.com/package/mysql#establishing-connections) object from the [mysql](https://www.npmjs.com/package/mysql) module, but with the extended functionality provided by this module. So, **you have access to all original properties and functions from the mysql module in the case you need it**. 
 
-The extended functions provided are:
+The principal extended functions provided are:
+
+ - `execute(query)`
+ - `executeTransaction(queryFunctions)` 
+
+These functions: `execute` and `executeTransaction`, provide a simple way to perform queries in the database with less verbose code like: establish and terminate connections or handle the transactions commit/rollback.
+
+**The query object is the [same](https://www.npmjs.com/package/mysql#performing-queries) as the used in the [mysql](https://www.npmjs.com/package/mysql) module.**
+
+Also, provides the promisified version of the core functions:
 
  - `connectP()`: Wrap function for `connection.connect()`
  - `endP()`: Wrap function for `connection.end()` 
@@ -26,17 +35,8 @@ The extended functions provided are:
  - `beginTransactionP()`: Wrap function for `connection.beginTransaction()`
  - `commitTransactionP()`: Wrap function for `connection.commit()`
  - `rollbackP()`: Wrap function for `connection.rollback()`
- - `execute(query)`
- - `executeTransaction(queryFunctions)` 
 
-Where the functions with suffix "P" are functions that return Promise.
-
-The last two functions: `execute` and `executeTransaction`, provide a simple way to make queries with less verbose code like establish and terminate connections, and handle the transactions commit/rollback.
-
-**The query object is the [same](https://www.npmjs.com/package/mysql#performing-queries) as the used in the [mysql](https://www.npmjs.com/package/mysql) module.**
-
-#### Examples
-(all the examples use the async/await syntax)
+#### Examples with async/await
 
 **First of all, lets see how the `execute` and `executeTransaction` are used:**
 
@@ -83,7 +83,7 @@ The `executeTransaction` uses the waterfall implementation approach to preserve 
 **If any error is thrown during the transaction, then rollback will be done automatically.**
 
 
-**Now, lets see with the wrapper functions:**
+**Now, lets see with the promisified functions:**
 
 ```js
 const createConnection = require('mysql-promise-extension').createConnection
@@ -159,25 +159,20 @@ The extended functions provided are:
  - `execute(query)`
  - `executeTransaction(queryFunctions)` 
 
-Where the functions with suffix "P" are functions that return Promise.
-
-The last two functions: `execute` and `executeTransaction`, provide the same functionality as the functions, with same names, from the connection object.
+Where the functions with suffix "P" are the promisified functions, and the last two functions: `execute` and `executeTransaction`, provide the same functionality as the functions, with same names, from the connection object.
 
 #### Examples
 
 **With the `execute` and `executeTransaction` functions (the same use as in the connection):**
 
 ```js
-const createPool = require('mysql-promise-extension').pool
-
 const options = { ... }
-
-const pool = createPool(options)
+const pool = require('mysql-promise-extension').pool(options)
 
 const getHobbiesAndUsers = (async () => {
 	const queryHobbies = 'select name from HOBBY'
-  const queryUsers = 'select name from USER'
-  const [hobbies, users] = await pool.execute([queryHobbies, queryUsers])
+	const queryUsers = 'select name from USER'
+	const [hobbies, users] = await pool.execute([queryHobbies, queryUsers])
 	return { hobbies, users }
 })
 
@@ -206,14 +201,11 @@ const createUserAndHobby = (async () => {
 	return result.affectedRows
 })
 ```
-**With the promise based functions:**
+**With the promisified functions:**
 
 ```js
-const createPool = require('mysql-promise-extension').pool
-
 const options = { ... }
-
-const pool = createPool(options)
+const pool = require('mysql-promise-extension').pool(options)
 
 const getHobbiesAndUsers = (async () => {
 	const [hobbies, users] = await pool.queryP('select name from HOBBY; select name from USER;')
